@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manuales y Protocolos | Verkoper SPA</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* Header */
+        .header {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            margin-bottom: 40px;
+            text-align: center;
+        }
+
+        .logo {
+            font-size: 3.5em;
+            font-weight: 900;
+            background: linear-gradient(135deg, #ff6b35, #f7931e);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: 3px;
+            margin-bottom: 10px;
+        }
+
+        .header h1 {
+            color: #2c3e50;
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            color: #7f8c8d;
+            font-size: 1.1em;
+        }
+
+        /* Search Bar */
+        .search-container {
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            margin-bottom: 40px;
+        }
+
+        .search-box {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .search-input {
+            flex: 1;
+            padding: 15px 20px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1.1em;
+            transition: all 0.3s ease;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: #ff6b35;
+            box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.1);
+        }
+
+        .search-icon {
+            font-size: 1.5em;
+            color: #ff6b35;
+        }
+
+        /* Protocol Grid */
+        .protocols-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .protocol-card {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .protocol-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(135deg, #ff6b35, #f7931e);
+        }
+
+        .protocol-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 50px rgba(0,0,0,0.2);
+        }
+
+        .protocol-icon {
+            font-size: 3em;
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        .protocol-title {
+            color: #2c3e50;
+            font-size: 1.4em;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .protocol-description {
+            color: #7f8c8d;
+            font-size: 0.95em;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+
+        .protocol-meta {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #ecf0f1;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 0.85em;
+            color: #95a5a6;
+        }
+
+        .protocol-badge {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.8em;
+            font-weight: 600;
+            margin-top: 10px;
+        }
+
+        .badge-operativo {
+            background: #e3f2fd;
+            color: #1976d2;
+        }
+
+        .badge-disciplina {
+            background: #fff8e1;
+            color: #f57c00;
+        }
+
+        .badge-funciones {
+            background: #e8f5e9;
+            color: #388e3c;
+        }
+
+        /* Footer */
+        .footer {
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            text-align: center;
+            color: #7f8c8d;
+        }
+
+        .footer-logo {
+            font-size: 1.5em;
+            font-weight: 700;
+            background: linear-gradient(135deg, #ff6b35, #f7931e);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .protocols-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .logo {
+                font-size: 2.5em;
+            }
+
+            .header h1 {
+                font-size: 1.5em;
+            }
+        }
+
+        /* Stats Section */
+        .stats-container {
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            margin-bottom: 40px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 30px;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 3em;
+            font-weight: 700;
+            background: linear-gradient(135deg, #ff6b35, #f7931e);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .stat-label {
+            color: #7f8c8d;
+            font-size: 1em;
+            margin-top: 10px;
+        }
+
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <div class="logo">VERKOPER</div>
+            <h1>Portal de Manuales y Protocolos</h1>
+            <p>Sistema de Gestión Documental | Versión 2026</p>
+        </div>
+
+        <!-- Stats -->
+        <div class="stats-container">
+            <div class="stat-item">
+                <div class="stat-number">6</div>
+                <div class="stat-label">Protocolos Activos</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">4</div>
+                <div class="stat-label">Áreas Cubiertas</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">2026</div>
+                <div class="stat-label">Vigencia Actual</div>
+            </div>
+        </div>
+
+        <!-- Search -->
+        <div class="search-container">
+            <div class="search-box">
+                <span class="search-icon">🔍</span>
+                <input 
+                    type="text" 
+                    class="search-input" 
+                    id="searchInput"
+                    placeholder="Buscar protocolo por nombre, área o palabra clave..."
+                    onkeyup="filterProtocols()"
+                >
+            </div>
+        </div>
+
+        <!-- Protocols Grid -->
+        <div class="protocols-grid" id="protocolsGrid">
+            
+            <!-- Protocolo Ventas -->
+            <div class="protocol-card" onclick="openProtocol('Verkoper_Protocolo_Ventas_2026.html')" data-keywords="ventas vendedor llamadas cotización sla atención cliente">
+                <span class="protocol-icon">📊</span>
+                <h3 class="protocol-title">Protocolo de Ventas</h3>
+                <p class="protocol-description">
+                    Normativa completa para el área comercial: gestión de llamadas, tiempos de respuesta, proceso de venta y coordinación con bodega.
+                </p>
+                <span class="protocol-badge badge-operativo">Operativo</span>
+                <div class="protocol-meta">
+                    <span class="meta-item">📄 11 secciones</span>
+                    <span class="meta-item">👥 Vendedores</span>
+                </div>
+            </div>
+
+            <!-- Protocolo Bodega -->
+            <div class="protocol-card" onclick="openProtocol('Verkoper_Protocolo_Bodega_2026.html')" data-keywords="bodega operario almacenamiento recepción despacho stock inventario">
+                <span class="protocol-icon">📦</span>
+                <h3 class="protocol-title">Protocolo de Bodega</h3>
+                <p class="protocol-description">
+                    Procedimientos de recepción, almacenamiento, preparación de pedidos y control de mercadería. Incluye productos sobredimensionados.
+                </p>
+                <span class="protocol-badge badge-operativo">Operativo</span>
+                <div class="protocol-meta">
+                    <span class="meta-item">📄 11 secciones</span>
+                    <span class="meta-item">👥 Bodega</span>
+                </div>
+            </div>
+
+            <!-- Protocolo Administrativo -->
+            <div class="protocol-card" onclick="openProtocol('Verkoper_Protocolo_Administrativo_2026.html')" data-keywords="administrativo facturación pagos documentos tributarios validación">
+                <span class="protocol-icon">💼</span>
+                <h3 class="protocol-title">Protocolo Administrativo</h3>
+                <p class="protocol-description">
+                    Validación de pagos, emisión de documentos tributarios, archivo documental y coordinación con ventas y bodega.
+                </p>
+                <span class="protocol-badge badge-operativo">Operativo</span>
+                <div class="protocol-meta">
+                    <span class="meta-item">📄 11 secciones</span>
+                    <span class="meta-item">👥 Administración</span>
+                </div>
+            </div>
+
+            <!-- Protocolo Horarios -->
+            <div class="protocol-card" onclick="openProtocol('Verkoper_Protocolo_Horarios_2026.html')" data-keywords="horarios asistencia puntualidad marcaje biométrico colación">
+                <span class="protocol-icon">⏰</span>
+                <h3 class="protocol-title">Protocolo de Horarios y Asistencia</h3>
+                <p class="protocol-description">
+                    Normativa de horarios, control de asistencia, puntualidad, colación y justificaciones. Aplica a todo el personal.
+                </p>
+                <span class="protocol-badge badge-disciplina">Disciplina</span>
+                <div class="protocol-meta">
+                    <span class="meta-item">📄 10 secciones</span>
+                    <span class="meta-item">👥 Todo el personal</span>
+                </div>
+            </div>
+
+            <!-- Protocolo Jefe Sucursal -->
+            <div class="protocol-card" onclick="openProtocol('Verkoper_Protocolo_Jefe_Sucursal_2026.html')" data-keywords="jefe sucursal supervisión responsabilidades funciones liderazgo coordinación">
+                <span class="protocol-icon">👔</span>
+                <h3 class="protocol-title">Funciones del Jefe de Sucursal</h3>
+                <p class="protocol-description">
+                    Definición de funciones, responsabilidades, atribuciones y deberes del cargo de Jefe de Sucursal.
+                </p>
+                <span class="protocol-badge badge-funciones">Funciones</span>
+                <div class="protocol-meta">
+                    <span class="meta-item">📄 12 secciones</span>
+                    <span class="meta-item">👥 Jefatura</span>
+                </div>
+            </div>
+
+            <!-- Matriz de Sanciones -->
+            <div class="protocol-card" onclick="openProtocol('Verkoper_Matriz_Sanciones_2026.html')" data-keywords="matriz sanciones incumplimientos faltas obligaciones disciplina">
+                <span class="protocol-icon">⚖️</span>
+                <h3 class="protocol-title">Matriz de Sanciones</h3>
+                <p class="protocol-description">
+                    Consolidado de obligaciones por rol, tipos de incumplimiento y sanciones asociadas según normativa laboral chilena.
+                </p>
+                <span class="protocol-badge badge-disciplina">Disciplina</span>
+                <div class="protocol-meta">
+                    <span class="meta-item">📄 4 roles</span>
+                    <span class="meta-item">👥 Todo el personal</span>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <div class="footer-logo">VERKOPER SPA</div>
+            <p>Ferretería Técnica Especializada</p>
+            <p style="margin-top: 10px; font-size: 0.9em;">
+                © 2026 Verkoper SPA | Todos los derechos reservados
+            </p>
+            <p style="margin-top: 15px; font-size: 0.85em; color: #bdc3c7;">
+                Última actualización: Enero 2026 | Versión 1.0
+            </p>
+        </div>
+    </div>
+
+    <script>
+        function openProtocol(filename) {
+            window.location.href = filename;
+        }
+
+        function filterProtocols() {
+            const input = document.getElementById('searchInput');
+            const filter = input.value.toLowerCase();
+            const cards = document.querySelectorAll('.protocol-card');
+            
+            cards.forEach(card => {
+                const title = card.querySelector('.protocol-title').textContent.toLowerCase();
+                const description = card.querySelector('.protocol-description').textContent.toLowerCase();
+                const keywords = card.getAttribute('data-keywords').toLowerCase();
+                
+                if (title.includes(filter) || description.includes(filter) || keywords.includes(filter)) {
+                    card.classList.remove('hidden');
+                } else {
+                    card.classList.add('hidden');
+                }
+            });
+        }
+    </script>
+</body>
+</html>

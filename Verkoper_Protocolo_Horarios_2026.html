@@ -1,0 +1,855 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Protocolo de Horarios, Asistencia y Puntualidad | Verkoper SPA</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        @media print {
+            body { margin: 0; }
+            .no-print { display: none; }
+            .page-break { page-break-after: always; }
+            .cover-page { page-break-after: always; }
+            
+            /* FORZAR IMPRESIÓN DE COLORES Y FONDOS */
+            * {
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+                color-adjust: exact !important;
+            }
+            
+            /* Asegurar que los gradientes se impriman */
+            .cover-page,
+            .header,
+            .section-number,
+            .btn-download {
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+            
+            /* Mantener colores de cajas informativas */
+            .info-box,
+            .warning-box,
+            .critical-box,
+            .success-box {
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #2c3e50;
+            background: #f4f4f4;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+        }
+
+        /* ESTILOS DE PORTADA */
+        .cover-page {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            text-align: center;
+            padding: 60px 40px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cover-page::before {
+            content: '';
+            position: absolute;
+            top: -20%;
+            right: -10%;
+            width: 600px;
+            height: 600px;
+            background: rgba(255,255,255,0.08);
+            border-radius: 50%;
+        }
+
+        .cover-page::after {
+            content: '';
+            position: absolute;
+            bottom: -15%;
+            left: -10%;
+            width: 500px;
+            height: 500px;
+            background: rgba(255,255,255,0.06);
+            border-radius: 50%;
+        }
+
+        .cover-content {
+            position: relative;
+            z-index: 1;
+            max-width: 800px;
+        }
+
+        .cover-logo {
+            font-size: 4.5em;
+            font-weight: 900;
+            letter-spacing: 4px;
+            margin-bottom: 30px;
+            text-shadow: 2px 2px 10px rgba(0,0,0,0.2);
+        }
+
+        .cover-title {
+            font-size: 2.5em;
+            font-weight: 600;
+            margin-bottom: 20px;
+            line-height: 1.3;
+            border-top: 3px solid white;
+            border-bottom: 3px solid white;
+            padding: 25px 0;
+        }
+
+        .cover-subtitle {
+            font-size: 1.6em;
+            font-weight: 300;
+            margin-bottom: 50px;
+        }
+
+        .cover-info {
+            background: rgba(255,255,255,0.15);
+            padding: 30px;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            margin-top: 50px;
+        }
+
+        .cover-info p {
+            margin: 12px 0;
+            font-size: 1.2em;
+        }
+
+        .cover-footer {
+            margin-top: 60px;
+            font-size: 1.1em;
+            font-weight: 500;
+            z-index: 10;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
+            color: white;
+            padding: 40px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -10%;
+            width: 400px;
+            height: 400px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 50%;
+        }
+
+        .header-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .company-name {
+            font-size: 2.5em;
+            font-weight: bold;
+            margin-bottom: 10px;
+            letter-spacing: 2px;
+        }
+
+        .document-title {
+            font-size: 1.5em;
+            font-weight: 300;
+            border-left: 4px solid white;
+            padding-left: 20px;
+            margin-top: 20px;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .section {
+            margin-bottom: 40px;
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #ff6b35;
+        }
+
+        .section-number {
+            background: linear-gradient(135deg, #ff6b35, #f7931e);
+            color: white;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.3em;
+            margin-right: 15px;
+            flex-shrink: 0;
+        }
+
+        .section-title {
+            font-size: 1.8em;
+            color: #2c3e50;
+            font-weight: 600;
+        }
+
+        .subsection {
+            margin-bottom: 25px;
+        }
+
+        .subsection-title {
+            color: #ff6b35;
+            font-size: 1.3em;
+            margin-bottom: 12px;
+            font-weight: 600;
+        }
+
+        p {
+            margin-bottom: 12px;
+            text-align: justify;
+        }
+
+        ul, ol {
+            margin-left: 25px;
+            margin-bottom: 15px;
+        }
+
+        li {
+            margin-bottom: 8px;
+        }
+
+        .info-box {
+            background: #e3f2fd;
+            border-left: 5px solid #2196f3;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+
+        .warning-box {
+            background: #fff8e1;
+            border-left: 5px solid #ffc107;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+
+        .critical-box {
+            background: #ffebee;
+            border-left: 5px solid #dc3545;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+
+        .success-box {
+            background: #e8f5e9;
+            border-left: 5px solid #4caf50;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border: 1px solid #ddd;
+        }
+
+        th {
+            background: linear-gradient(135deg, #ff6b35, #f7931e);
+            color: white;
+            font-weight: 600;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        .highlight {
+            background-color: #fff3cd;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-weight: 600;
+        }
+
+        .btn-download {
+            background: linear-gradient(135deg, #ff6b35, #f7931e);
+            color: white;
+            padding: 15px 40px;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.1em;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin: 40px auto;
+            box-shadow: 0 4px 15px rgba(255, 107, 53, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .btn-download:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 107, 53, 0.4);
+        }
+
+        .footer {
+            background: #2c3e50;
+            color: white;
+            padding: 30px 40px;
+            text-align: center;
+        }
+
+        .footer-note {
+            margin-top: 10px;
+            font-size: 0.9em;
+            opacity: 0.8;
+        }
+
+        .page-break {
+            page-break-after: always;
+        }
+    
+        /* NAVEGACIÓN FLOTANTE */
+        .nav-bar {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: white;
+            padding: 15px 20px;
+            border-radius: 50px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+            z-index: 1000;
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .nav-btn {
+            background: linear-gradient(135deg, #ff6b35, #f7931e);
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 25px;
+            font-size: 0.9em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+        }
+
+        .nav-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(255, 107, 53, 0.4);
+        }
+
+        .nav-btn-secondary {
+            background: #f8f9fa;
+            color: #2c3e50;
+            border: 2px solid #e0e0e0;
+        }
+
+        .nav-btn-secondary:hover {
+            background: #e9ecef;
+            border-color: #ff6b35;
+        }
+
+        .back-to-top {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: linear-gradient(135deg, #ff6b35, #f7931e);
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5em;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(255, 107, 53, 0.3);
+            transition: all 0.3s ease;
+            z-index: 999;
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .back-to-top.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .back-to-top:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 20px rgba(255, 107, 53, 0.5);
+        }
+
+        .related-protocols {
+            background: #f8f9fa;
+            padding: 40px;
+            border-radius: 15px;
+            margin: 40px 0;
+            border-left: 5px solid #ff6b35;
+        }
+
+        .related-protocols h3 {
+            color: #2c3e50;
+            font-size: 1.5em;
+            margin-bottom: 20px;
+        }
+
+        .related-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .related-card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
+
+        .related-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+        }
+
+        .related-icon {
+            font-size: 2em;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        .related-title {
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 8px;
+        }
+
+        .related-desc {
+            font-size: 0.85em;
+            color: #7f8c8d;
+            line-height: 1.4;
+        }
+
+        @media (max-width: 768px) {
+            .nav-bar {
+                top: 10px;
+                right: 10px;
+                left: 10px;
+                border-radius: 15px;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            
+            .back-to-top {
+                bottom: 20px;
+                right: 20px;
+            }
+        }
+
+        @media print {
+            .nav-bar, .back-to-top, .related-protocols {
+                display: none !important;
+            }
+        }
+
+    </style>
+</head>
+<body>
+    <!-- Barra de navegación -->
+    <div class="nav-bar no-print">
+        <a href="index.html" class="nav-btn">
+            🏠 Inicio
+        </a>
+        <button class="nav-btn nav-btn-secondary" onclick="window.print()">
+            🖨️ Imprimir
+        </button>
+    </div>
+
+    <div class="container">
+        <!-- Portada -->
+        <div class="cover-page">
+            <div class="cover-content">
+                <div class="cover-logo">VERKOPER</div>
+                <h1 class="cover-title">PROTOCOLO DE HORARIOS,<br>ASISTENCIA Y PUNTUALIDAD</h1>
+                <p class="cover-subtitle">Normativa Operativa Obligatoria</p>
+                <div class="cover-info">
+                    <p><strong>Documento Oficial</strong></p>
+                    <p>Verkoper SPA</p>
+                    <p>Ferretería Técnica Especializada</p>
+                    <p>Vigencia: 2026</p>
+                </div>
+                <p class="cover-footer">VERKOPER SPA © 2026 | Uso Interno</p>
+            </div>
+        </div>
+
+        <!-- Contenido del Protocolo -->
+        <div class="content">
+            
+            <!-- Sección 1: Objetivo -->
+            <div class="section">
+                <div class="section-header">
+                    <div class="section-number">1</div>
+                    <h2 class="section-title">Objetivo</h2>
+                </div>
+                <p>Establecer normas claras, obligatorias y uniformes respecto a horarios de trabajo, control de asistencia, puntualidad y tiempos de colación en <strong>VERKOPER SPA</strong>, asegurando continuidad operativa, disciplina laboral, equidad entre colaboradores y correcto funcionamiento de la sucursal.</p>
+            </div>
+
+            <!-- Sección 2: Alcance -->
+            <div class="section">
+                <div class="section-header">
+                    <div class="section-number">2</div>
+                    <h2 class="section-title">Alcance</h2>
+                </div>
+                <p>Este protocolo es de cumplimiento obligatorio para todo el personal de la sucursal, incluyendo:</p>
+                <ul>
+                    <li>Vendedores</li>
+                    <li>Personal Administrativo</li>
+                    <li>Operario de Bodega</li>
+                    <li>Jefe de Sucursal</li>
+                </ul>
+                <div class="warning-box">
+                    <p><strong>⚠️ Sin excepción:</strong> Este protocolo aplica a todos los colaboradores por igual.</p>
+                </div>
+            </div>
+
+            <!-- Sección 3: Jornada de Trabajo Oficial -->
+            <div class="section">
+                <div class="section-header">
+                    <div class="section-number">3</div>
+                    <h2 class="section-title">Jornada de Trabajo Oficial</h2>
+                </div>
+
+                <table>
+                    <tr>
+                        <th>Concepto</th>
+                        <th>Horario</th>
+                    </tr>
+                    <tr>
+                        <td><strong>Hora de Ingreso</strong></td>
+                        <td>08:00 hrs</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Hora de Salida</strong></td>
+                        <td>17:00 hrs</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Duración de Colación</strong></td>
+                        <td>30 minutos</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Sistema de Control</strong></td>
+                        <td>Marcaje biométrico por huella digital</td>
+                    </tr>
+                </table>
+            </div>
+
+            <!-- Sección 4: Puntualidad y Marcaje de Asistencia -->
+            <div class="section">
+                <div class="section-header">
+                    <div class="section-number">4</div>
+                    <h2 class="section-title">Puntualidad y Marcaje de Asistencia</h2>
+                </div>
+
+                <div class="subsection">
+                    <h3 class="subsection-title">4.1 Obligación de Marcaje</h3>
+                    <p>Todo colaborador deberá:</p>
+                    <ul>
+                        <li>Marcar personalmente su ingreso y salida</li>
+                        <li>Utilizar exclusivamente el sistema biométrico habilitado</li>
+                        <li>Realizar el marcaje a la hora exacta correspondiente</li>
+                    </ul>
+
+                    <div class="critical-box">
+                        <p><strong>🚫 Queda estrictamente prohibido:</strong></p>
+                        <ul>
+                            <li>Marcar asistencia por otra persona</li>
+                            <li>Solicitar a terceros marcar asistencia</li>
+                            <li>Omitir el marcaje sin autorización expresa</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="subsection">
+                    <h3 class="subsection-title">4.2 Puntualidad</h3>
+                    <p>Se considera <strong>atraso</strong> todo ingreso posterior a las <span class="highlight">08:00 hrs</span>.</p>
+
+                    <div class="warning-box">
+                        <p><strong>⚠️ Importante:</strong></p>
+                        <ul>
+                            <li>No existen "márgenes de atraso" tolerados</li>
+                            <li>La reiteración de atrasos constituye falta laboral</li>
+                            <li>El atraso del personal de bodega puede afectar la apertura y operación completa de la sucursal</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sección 5: Colación -->
+            <div class="section">
+                <div class="section-header">
+                    <div class="section-number">5</div>
+                    <h2 class="section-title">Colación</h2>
+                </div>
+
+                <div class="subsection">
+                    <h3 class="subsection-title">5.1 Horarios de Colación</h3>
+                    <p>La colación tendrá una duración de <strong>30 minutos</strong>, pudiendo realizarse en uno de los siguientes bloques:</p>
+                    <ul>
+                        <li>12:45 a 13:15 hrs</li>
+                        <li>13:30 a 14:00 hrs</li>
+                    </ul>
+                    <p>La distribución será definida por la jefatura, considerando continuidad operativa.</p>
+                </div>
+
+                <div class="subsection">
+                    <h3 class="subsection-title">5.2 Condiciones</h3>
+                    <p>Durante la colación:</p>
+                    <ul>
+                        <li>El colaborador se encuentra fuera de funciones</li>
+                        <li>No se considera tiempo trabajado</li>
+                        <li>Debe respetarse estrictamente el horario asignado</li>
+                    </ul>
+
+                    <div class="critical-box">
+                        <p><strong>🚫 No está permitido:</strong></p>
+                        <ul>
+                            <li>Extender el tiempo de colación</li>
+                            <li>Alterar el bloque asignado sin autorización</li>
+                            <li>Abandonar el puesto fuera del horario de colación</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sección 6: Ausencias, Retrasos y Justificaciones -->
+            <div class="section">
+                <div class="section-header">
+                    <div class="section-number">6</div>
+                    <h2 class="section-title">Ausencias, Retrasos y Justificaciones</h2>
+                </div>
+
+                <div class="subsection">
+                    <h3 class="subsection-title">6.1 Comunicación Obligatoria</h3>
+                    <p>Ante cualquier situación de:</p>
+                    <ul>
+                        <li>Atraso</li>
+                        <li>Ausencia</li>
+                        <li>Impedimento para asistir</li>
+                    </ul>
+
+                    <div class="info-box">
+                        <p><strong>El colaborador deberá:</strong></p>
+                        <ol>
+                            <li>Informar antes del horario de ingreso</li>
+                            <li>Comunicar directamente al Jefe de Sucursal</li>
+                            <li>Justificar formalmente cuando corresponda</li>
+                        </ol>
+                    </div>
+                </div>
+
+                <div class="subsection">
+                    <h3 class="subsection-title">6.2 Justificaciones</h3>
+                    <p>Las justificaciones deberán:</p>
+                    <ul>
+                        <li>Ser reales y comprobables</li>
+                        <li>Presentarse dentro del plazo definido por la empresa</li>
+                        <li>No eximen automáticamente de sanción si existe reincidencia</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Sección 7: Impacto Operativo del Incumplimiento -->
+            <div class="section">
+                <div class="section-header">
+                    <div class="section-number">7</div>
+                    <h2 class="section-title">Impacto Operativo del Incumplimiento</h2>
+                </div>
+
+                <div class="warning-box">
+                    <p><strong>Se reconoce expresamente que:</strong></p>
+                    <ul>
+                        <li>El atraso o ausencia de personal afecta la operación completa</li>
+                        <li>La no apertura o apertura tardía de bodega impacta ventas, despacho y atención a clientes</li>
+                        <li>El incumplimiento de horarios genera sobrecarga en otros colaboradores</li>
+                    </ul>
+                </div>
+
+                <div class="critical-box">
+                    <p><strong>🔴 Consecuencias:</strong></p>
+                    <p>Por lo anterior, los atrasos reiterados serán considerados con mayor gravedad, especialmente en cargos críticos.</p>
+                </div>
+            </div>
+
+            <!-- Sección 8: Rol del Jefe de Sucursal -->
+            <div class="section">
+                <div class="section-header">
+                    <div class="section-number">8</div>
+                    <h2 class="section-title">Rol del Jefe de Sucursal</h2>
+                </div>
+
+                <p>Corresponde al Jefe de Sucursal:</p>
+                <ul>
+                    <li>Supervisar diariamente la asistencia del personal</li>
+                    <li>Revisar marcajes y reportes del sistema biométrico</li>
+                    <li>Registrar atrasos, ausencias e incumplimientos</li>
+                    <li>Aplicar medidas correctivas y escalar sanciones conforme al Reglamento Interno</li>
+                </ul>
+
+                <div class="success-box">
+                    <p><strong>✓ Liderazgo con ejemplo:</strong></p>
+                    <p>El Jefe de Sucursal debe ser el primero en cumplir con los horarios establecidos, demostrando el compromiso y la disciplina que se espera de todo el equipo.</p>
+                </div>
+            </div>
+
+            <!-- Sección 9: Incumplimientos y Sanciones -->
+            <div class="section">
+                <div class="section-header">
+                    <div class="section-number">9</div>
+                    <h2 class="section-title">Incumplimientos y Sanciones</h2>
+                </div>
+
+                <p>El incumplimiento de este protocolo será sancionado conforme al Reglamento Interno de Orden, Higiene y Seguridad, considerándose:</p>
+
+                <table style="margin-top: 20px;">
+                    <tr>
+                        <th>Tipo de Falta</th>
+                        <th>Descripción</th>
+                    </tr>
+                    <tr>
+                        <td><strong style="color: #ffc107;">Falta Leve</strong></td>
+                        <td>Atraso ocasional o error de marcaje</td>
+                    </tr>
+                    <tr>
+                        <td><strong style="color: #dc3545;">Falta Grave</strong></td>
+                        <td>Reincidencia de atrasos, no justificar ausencias</td>
+                    </tr>
+                    <tr>
+                        <td><strong style="color: #721c24;">Falta Gravísima</strong></td>
+                        <td>Marcaje fraudulento, no apertura de bodega, abandono injustificado del puesto</td>
+                    </tr>
+                </table>
+            </div>
+
+            <!-- Sección 10: Vigencia -->
+            <div class="section">
+                <div class="section-header">
+                    <div class="section-number">10</div>
+                    <h2 class="section-title">Vigencia</h2>
+                </div>
+                <div class="success-box">
+                    <p>El presente protocolo entra en vigencia desde su publicación y es <strong>complementario</strong> al Reglamento Interno de Orden, Higiene y Seguridad de VERKOPER SPA.</p>
+                    <p style="margin-top: 15px;"><strong>Todos los colaboradores son responsables de conocer, cumplir y hacer cumplir este protocolo.</strong></p>
+                </div>
+            </div>
+
+            
+        <div class="related-protocols no-print">
+            <h3>📚 Protocolos Relacionados</h3>
+            <div class="related-grid">
+                <a href="Verkoper_Protocolo_Jefe_Sucursal_2026.html" class="related-card">
+                    <span class="related-icon">👔</span>
+                    <div class="related-title">Funciones del Jefe</div>
+                    <div class="related-desc">Control de asistencia y supervisión</div>
+                </a>
+                <a href="Verkoper_Matriz_Sanciones_2026.html" class="related-card">
+                    <span class="related-icon">⚖️</span>
+                    <div class="related-title">Matriz de Sanciones</div>
+                    <div class="related-desc">Sanciones por incumplimientos</div>
+                </a>
+            </div>
+        </div>
+
+            <button class="btn-download no-print" onclick="window.print()">
+                <span class="icon">📄</span> Descargar / Imprimir Documento
+            </button>
+        </div>
+
+        <div class="footer">
+            <p><strong>VERKOPER SPA</strong></p>
+            <p class="footer-note">Ferretería Técnica Especializada | www.verkoper.cl</p>
+            <p class="footer-note">Este es un documento oficial de la empresa. Su cumplimiento es obligatorio.</p>
+        </div>
+    </div>
+
+    <!-- Botón volver arriba -->
+    <div class="back-to-top no-print" id="backToTop" onclick="scrollToTop()">
+        ⬆️
+    </div>
+
+    <script>
+        // Mostrar/ocultar botón de volver arriba
+        window.onscroll = function() {
+            const backToTop = document.getElementById('backToTop');
+            if (document.body.scrollTop > 300 || document.documentElement.scrollTop > 300) {
+                backToTop.classList.add('visible');
+            } else {
+                backToTop.classList.remove('visible');
+            }
+        };
+
+        // Función para scroll suave
+        function scrollToTop() {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        }
+    </script>
+
+</body>
+</html>
